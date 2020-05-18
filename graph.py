@@ -15,8 +15,8 @@ class Graph:
 
     def readFile(self):
         i=0
-        #fileinput = open(sys.argv[1], "r")
-        fileinput = open("/Users/maciekpaszylka/Desktop/cost266.txt", 'r')
+        fileinput = open(sys.argv[1], "r")
+        #fileinput = open("/Users/maciekpaszylka/Desktop/cost266.txt", 'r')
         f1 = fileinput.readlines()
         for line in f1:
             if not line.startswith(")"):
