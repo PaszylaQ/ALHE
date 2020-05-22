@@ -107,7 +107,7 @@ class Graph:
         return calculate_cost()
 
     #from itertools, generates "routes" number of permutations
-    def permutations(self, iterable, r=None, routes=50000):
+    def permutations(self, iterable, r=None, routes=500000):
         # permutations('ABCD', 2) --> AB AC AD BA BC BD CA CB CD DA DB DC
         # permutations(range(3)) --> 012 021 102 120 201 210
         pool = tuple(iterable)
