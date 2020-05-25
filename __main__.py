@@ -4,4 +4,5 @@ graf = Graph()
 graf.readFile()
 graf.makeAdjacencyMatrix()
 
-graf.minSpanningTree("Athens")
+route = graf.bruteForce(begin_city='Warsaw')
+
