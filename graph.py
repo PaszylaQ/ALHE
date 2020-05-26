@@ -10,7 +10,7 @@ class Graph:
         self.city_coordinates_list = [[0 for i in range(3)] for i in range(37)]
         self.adjacency_matrix = []
         self.distance_list = []
-        for i in range(len(self.city_coordinates_list) ):
+        for i in range(len(self.city_coordinates_list)):
             self.adjacency_matrix.append([0 for i in range(len(self.city_coordinates_list))])
 
     def countDistance(self, v1, v2):
@@ -19,8 +19,8 @@ class Graph:
     def readFile(self):
         i=0
         #fileinput = open(sys.argv[1], "r")
-        #fileinput = open("/Users/mateusz/PycharmProjects/alhe/ALHE/cost266.txt", 'r')
-        fileinput = open("/Users/maciekpaszylka/Desktop/cost266.txt", 'r')
+        fileinput = open("/Users/mateusz/PycharmProjects/alhe/ALHE/cost266.txt", 'r')
+        #fileinput = open("/Users/maciekpaszylka/Desktop/cost266.txt", 'r')
 
         f1 = fileinput.readlines()
         for line in f1:
@@ -66,15 +66,85 @@ class Graph:
                 vertex_list.append(queue[idx])
                 #print(queue[idx])
                 s = queue[idx]
-                cost+= min(temp)
+                cost += min(temp)
 
         for k in range(len(vertex_list)):
             print(vertex_list[k], "->")
 
         print(cost)
 
-    def aStar(self,beginning):
-        print("astar")
+    def a_star(self, begin_city):
+
+        def calculate_cost(path):
+
+            distance = 0
+            if len(path) == 1:
+                return 0
+            for i in range(len(path) - 1):
+                city1 = path[i]
+                city2 = path[i + 1]
+                distance += self.adjacency_matrix[city1][city2]
+
+            return distance
+
+        def closest_not_visited(n, not_visited_cities):
+
+            distance2 = 10000
+            result2 = -1
+            for city2 in not_visited_cities:
+                y = self.adjacency_matrix[n][city2]
+
+                if y < distance2 and y != 0:
+                    distance2 = y
+                    result2 = city2
+            print("distance2", distance2)
+            return distance2, result2
+
+        path = []
+
+        if begin_city in self.city_name_list:
+            beginIndex = self.city_name_list.index(begin_city)
+        else:
+            print("No such city")
+            return
+
+        not_visited = [x for x in range(len(self.city_name_list))]
+        not_visited.remove(beginIndex)
+
+        path.append(beginIndex)
+
+        while len(not_visited) > 1:
+            shortest = 10000
+            next_city = -1
+
+            for city in not_visited:
+                score = 0
+
+                score += calculate_cost(path)                       # these 2 are g(n)
+                score += self.adjacency_matrix[city][path[-1]]      # distance between last added to path and current city
+
+                distance, result = closest_not_visited(city, not_visited)
+
+                score += distance
+                score += self.adjacency_matrix[result][path[0]]
+
+                #score += minSpanningTree()
+
+                if score < shortest:
+                    shortest = score
+                    next_city = city
+            print("nextcity", next_city)
+            path.append(next_city)
+            not_visited.remove(next_city)
+
+        path.append(not_visited[0])
+        path.append(path[0])
+
+        print("Path found:")
+        for x in path:
+            print(self.city_name_list[x])
+        print("Score:", calculate_cost(path))
+
 
 
     def bruteForce(self, begin_city='Amsterdam'):
