@@ -9,6 +9,7 @@ class Graph:
         self.city_name_list = []
         self.city_coordinates_list = [[0 for i in range(3)] for i in range(37)]
         self.adjacency_matrix = []
+        self.distance_list = []
         for i in range(len(self.city_coordinates_list) ):
             self.adjacency_matrix.append([0 for i in range(len(self.city_coordinates_list))])
 
@@ -18,7 +19,9 @@ class Graph:
     def readFile(self):
         i=0
         #fileinput = open(sys.argv[1], "r")
-        fileinput = open("/Users/mateusz/PycharmProjects/alhe/ALHE/cost266.txt", 'r')
+        #fileinput = open("/Users/mateusz/PycharmProjects/alhe/ALHE/cost266.txt", 'r')
+        fileinput = open("/Users/maciekpaszylka/Desktop/cost266.txt", 'r')
+
         f1 = fileinput.readlines()
         for line in f1:
             if not line.startswith(")"):
@@ -39,30 +42,40 @@ class Graph:
                 self.adjacency_matrix[k][j] = self.countDistance(self.city_name_list[k], self.city_name_list[j])
                 self.adjacency_matrix[j][k] = self.countDistance(self.city_name_list[k], self.city_name_list[j])
 
-    def getMinimumDistance(self, idx):
-        temp = self.adjacency_matrix[idx]
-        temp.sort()
-        return temp[1]
 
     def minSpanningTree(self, beginning):
-        vertex_list = [[] for names in range(len(self.city_name_list))]
-        queue = []
-        visited = [False] * (len(self.city_name_list))
         s = beginning
-        queue.append(s)
-        cost = 0
+        vertex_list = []
+        vertex_list.append(s)
+        visited = [False for i in range(len(self.city_name_list))]
         visited[self.city_name_list.index(s)] = True
-        while queue:
-            s = queue.pop(0)
+        cost = 0
+        while len(vertex_list) != 37:
+            queue = []
+            temp = []
+            idx = 0
             for i in range(len(self.city_name_list)):
-                if self.city_name_list[i] == s:
-                    index = self.adjacency_matrix[i].index(self.getMinimumDistance(i))
-                    if not visited[index]:
-                        cost += self.getMinimumDistance(i)
-                        queue.append(self.city_name_list[index])
-                        print(self.city_name_list[index], "->")
-                        visited[index] = True
+                if self.city_name_list[i] != s and self.city_name_list[i] not in vertex_list:
+                    queue.append(self.city_name_list[i])
+            for j in range(len(queue)):
+                temp.append(self.countDistance(queue[j], s))
+            idx = queue.index(queue[temp.index(min(temp))])
+
+            if not visited[self.city_name_list.index(queue[idx])]:
+                visited[self.city_name_list.index(queue[idx])] = True
+                vertex_list.append(queue[idx])
+                #print(queue[idx])
+                s = queue[idx]
+                cost+= min(temp)
+
+        for k in range(len(vertex_list)):
+            print(vertex_list[k], "->")
+
         print(cost)
+
+    def aStar(self,beginning):
+        print("astar")
+
 
     def bruteForce(self, begin_city='Amsterdam'):
 
