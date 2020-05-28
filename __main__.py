@@ -7,5 +7,5 @@ graf.makeAdjacencyMatrix()
 #graf.minSpanningTree("Oslo")
 
 graf.a_star("Krakow")
-graf.bruteForce("Krakow")
-#route = graf.bruteForce(begin_city='Warsaw')
+# graf.bruteForce("Krakow")
+# route = graf.bruteForce(begin_city='Warsaw')
