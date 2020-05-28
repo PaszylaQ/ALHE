@@ -17,10 +17,10 @@ class Graph:
         return math.sqrt((float(self.city_coordinates_list[self.city_name_list.index(v1)][1])-float(self.city_coordinates_list[self.city_name_list.index(v2)][1]))**2 + (float(self.city_coordinates_list[self.city_name_list.index(v1)][2])-float(self.city_coordinates_list[self.city_name_list.index(v2)][2]))**2)
 
     def readFile(self):
-        i=0
-        #fileinput = open(sys.argv[1], "r")
-        fileinput = open("/Users/mateusz/PycharmProjects/alhe/ALHE/cost266.txt", 'r')
-        #fileinput = open("/Users/maciekpaszylka/Desktop/cost266.txt", 'r')
+        i = 0
+        # fileinput = open(sys.argv[1], "r")
+        # fileinput = open("/Users/mateusz/PycharmProjects/alhe/ALHE/cost266.txt", 'r')
+        fileinput = open("/Users/maciekpaszylka/Desktop/cost266.txt", 'r')
 
         f1 = fileinput.readlines()
         for line in f1:
@@ -42,18 +42,19 @@ class Graph:
                 self.adjacency_matrix[k][j] = self.countDistance(self.city_name_list[k], self.city_name_list[j])
                 self.adjacency_matrix[j][k] = self.countDistance(self.city_name_list[k], self.city_name_list[j])
 
-
-    def minSpanningTree(self, beginning):
+    def minSpanningTree(self, beginning, notVisited):
         s = beginning
         vertex_list = []
+        for i in range(len(notVisited)):
+            vertex_list.append(self.city_name_list[notVisited[i]])
         vertex_list.append(s)
         visited = [False for i in range(len(self.city_name_list))]
-        visited[self.city_name_list.index(s)] = True
+        for i in range(len(notVisited)):
+            visited[notVisited[i]] = True
         cost = 0
         while len(vertex_list) != 37:
             queue = []
             temp = []
-            idx = 0
             for i in range(len(self.city_name_list)):
                 if self.city_name_list[i] != s and self.city_name_list[i] not in vertex_list:
                     queue.append(self.city_name_list[i])
@@ -64,14 +65,9 @@ class Graph:
             if not visited[self.city_name_list.index(queue[idx])]:
                 visited[self.city_name_list.index(queue[idx])] = True
                 vertex_list.append(queue[idx])
-                #print(queue[idx])
                 s = queue[idx]
                 cost += min(temp)
-
-        for k in range(len(vertex_list)):
-            print(vertex_list[k], "->")
-
-        print(cost)
+        return cost
 
     def a_star(self, begin_city):
 
@@ -97,7 +93,7 @@ class Graph:
                 if y < distance2 and y != 0:
                     distance2 = y
                     result2 = city2
-            print("distance2", distance2)
+            #print("distance2", distance2)
             return distance2, result2
 
         path = []
@@ -116,7 +112,6 @@ class Graph:
         while len(not_visited) > 1:
             shortest = 10000
             next_city = -1
-
             for city in not_visited:
                 score = 0
 
@@ -128,12 +123,12 @@ class Graph:
                 score += distance
                 score += self.adjacency_matrix[result][path[0]]
 
-                #score += minSpanningTree()
+                score += self.minSpanningTree(self.city_name_list[city], not_visited)
 
                 if score < shortest:
                     shortest = score
                     next_city = city
-            print("nextcity", next_city)
+            #print("nextcity", next_city)
             path.append(next_city)
             not_visited.remove(next_city)
 
