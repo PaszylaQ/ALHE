@@ -5,7 +5,8 @@ import random
 
 class Graph:
 
-    def __init__(self):
+    def __init__(self, file):
+        self.file = file
         self.city_name_list = []
         self.city_coordinates_list = [[0 for i in range(3)] for i in range(37)]
         self.adjacency_matrix = []
@@ -18,9 +19,7 @@ class Graph:
 
     def readFile(self):
         i = 0
-        # fileinput = open(sys.argv[1], "r")
-        # fileinput = open("/Users/mateusz/PycharmProjects/alhe/ALHE/cost266.txt", 'r')
-        fileinput = open("/Users/maciekpaszylka/Desktop/cost266.txt", 'r')
+        fileinput = open(self.file, 'r')
 
         f1 = fileinput.readlines()
         for line in f1:
@@ -93,7 +92,6 @@ class Graph:
                 if y < distance2 and y != 0:
                     distance2 = y
                     result2 = city2
-            #print("distance2", distance2)
             return distance2, result2
 
         path = []
@@ -128,21 +126,19 @@ class Graph:
                 if score < shortest:
                     shortest = score
                     next_city = city
-            #print("nextcity", next_city)
             path.append(next_city)
             not_visited.remove(next_city)
 
         path.append(not_visited[0])
         path.append(path[0])
 
-        print("Path found:")
+        print("A STAR Path found:")
         for x in path:
             print(self.city_name_list[x])
         print("Score:", calculate_cost(path))
 
 
-
-    def bruteForce(self, begin_city='Amsterdam'):
+    def bruteForce(self, begin_city='Amsterdam', routes=500000):
 
         beginIndex = 0
 
@@ -153,7 +149,7 @@ class Graph:
         cities.remove(beginIndex)
         random.shuffle(cities)
 
-        routes = list(map(list, self.permutations(cities)))
+        routes = list(map(list, self.permutations(cities, routes)))
         for x in routes:
             x.insert(0, beginIndex)
             x.insert(len(routes), beginIndex)
@@ -175,7 +171,7 @@ class Graph:
             smallest_cost = min(travel_costs)
             shortest = (routes[travel_costs.index(smallest_cost)], smallest_cost)
 
-            print("Best found route is:")
+            print("\nBRUTE FORCE Best found route is:")
             for x in routes[0]:
                 print(self.city_name_list[x])
             print("With cost", shortest[1])
@@ -185,7 +181,7 @@ class Graph:
         return calculate_cost()
 
     #from itertools, generates "routes" number of permutations
-    def permutations(self, iterable, r=None, routes=500000):
+    def permutations(self, iterable, routes=500000, r=None):
         # permutations('ABCD', 2) --> AB AC AD BA BC BD CA CB CD DA DB DC
         # permutations(range(3)) --> 012 021 102 120 201 210
         pool = tuple(iterable)
